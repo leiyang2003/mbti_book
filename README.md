@@ -27,3 +27,7 @@ npm run test:sites
 ```
 
 视觉对照与交互测试结果见 `design-qa.md`。
+
+## Vercel
+
+仓库根目录的 `vercel.json` 明确指定 `dist/client` 为输出目录，并把非静态资源路径回退到 `index.html`。这与当前同时面向 Sites 的 Vite 构建结构保持一致，可避免 Vercel 在错误的 `dist/` 层级返回 404。
