@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { localCommentsPlugin } from "./scripts/local-comments-plugin.mjs";
 
 export default defineConfig({
   build: {
@@ -15,5 +16,5 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [react()],
+  plugins: [react(), localCommentsPlugin()],
 });
