@@ -334,11 +334,11 @@ export function App() {
 function LanguageSwitcher({ locale, changeLocale, compact = false }) {
   return (
     <div className={compact ? "language-switcher is-compact" : "language-switcher"} aria-label={locale === "zh" ? "语言选择" : locale === "ja" ? "言語選択" : "Language selection"}>
-      <button onClick={() => changeLocale("ja")} aria-pressed={locale === "ja"}>日本語</button>
+      <button onClick={() => changeLocale("ja")} aria-label="日本語" title="日本語" aria-pressed={locale === "ja"}>JP</button>
       <span aria-hidden="true">/</span>
-      <button onClick={() => changeLocale("zh")} aria-pressed={locale === "zh"}>中文</button>
+      <button onClick={() => changeLocale("zh")} aria-label="中文" title="中文" aria-pressed={locale === "zh"}>CN</button>
       <span aria-hidden="true">/</span>
-      <button onClick={() => changeLocale("en")} aria-pressed={locale === "en"}>English</button>
+      <button onClick={() => changeLocale("en")} aria-label="English" title="English" aria-pressed={locale === "en"}>EN</button>
     </div>
   );
 }
