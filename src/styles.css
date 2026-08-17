@@ -1512,10 +1512,6 @@ a:focus-visible {
     gap: 12px;
   }
 
-  .reader-header-actions .language-switcher {
-    display: none;
-  }
-
   .reader-comments-button {
     font-size: 0;
   }
@@ -1533,17 +1529,35 @@ a:focus-visible {
 }
 
 @media (max-width: 620px) {
-  .mobile-header-actions {
+  .site-header {
     gap: 10px;
   }
 
+  .wordmark {
+    min-width: 0;
+    max-width: calc(100% - 124px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-header-actions {
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+
   .language-switcher.is-compact {
-    gap: 6px;
+    gap: 4px;
     font-size: 11px;
   }
 
-  .mobile-header-actions > .language-switcher {
-    display: none;
+  .reader-wordmark {
+    min-width: 0;
+  }
+
+  .reader-header-actions {
+    flex: 0 0 auto;
+    gap: 10px;
   }
 
   .guestbook-section {

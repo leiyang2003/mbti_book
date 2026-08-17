@@ -205,7 +205,8 @@ function shortTitle(document) {
 export function App() {
   const initial = parseHash();
   const savedLocale = window.localStorage.getItem("book-locale");
-  const initialLocale = initial.locale || (["ja", "zh", "en"].includes(savedLocale) ? savedLocale : "ja");
+  const isMobileViewport = window.matchMedia("(max-width: 620px)").matches;
+  const initialLocale = initial.locale || (isMobileViewport ? "ja" : (["ja", "zh", "en"].includes(savedLocale) ? savedLocale : "ja"));
   const initialBook = getBook(initialLocale);
   const initialIndex = Math.max(initialBook.documents.findIndex((document) => document.slug === initial.slug), 0);
   const [locale, setLocale] = useState(initialLocale);
