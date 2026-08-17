@@ -1181,6 +1181,12 @@ a:focus-visible {
   font-family: var(--serif);
 }
 
+.site-shell[data-locale="en"] {
+  --serif: Baskerville, Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--serif);
+}
+
 .desktop-nav {
   gap: clamp(18px, 2vw, 34px);
 }
@@ -1452,6 +1458,16 @@ a:focus-visible {
   font-size: 15px;
 }
 
+.comment-locale {
+  margin-right: auto;
+  padding: 2px 6px;
+  border: 1px solid rgba(83, 107, 122, 0.22);
+  color: var(--blue);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
 .comment-item time {
   color: var(--gold);
   font-family: var(--sans);
@@ -1524,6 +1540,10 @@ a:focus-visible {
   .language-switcher.is-compact {
     gap: 6px;
     font-size: 11px;
+  }
+
+  .mobile-header-actions > .language-switcher {
+    display: none;
   }
 
   .guestbook-section {

@@ -125,13 +125,70 @@ const copy = {
     submitSuccess: "留言已经公开保存。",
     publicStorage: "留言会写入固定数据文件，并向所有读者公开。",
   },
+  en: {
+    languageName: "English",
+    brand: "Beyond the Four Letters",
+    navLabel: "Primary navigation",
+    aboutNav: "About",
+    toc: "Contents",
+    workbookNav: "30-day practice",
+    messagesNav: "Messages",
+    readFull: "Read the full book",
+    openMenu: "Open contents",
+    heroLine1: "Beyond the",
+    heroLine2: "Four Letters",
+    subtitle: <>MBTI as a Starting Point,<br />Not a Limit</>,
+    promise: <>From “That’s just who I am”<br />to “That’s something I can do, too.”</>,
+    viewToc: "View contents",
+    chapterLabel: "Chapter 1",
+    chapterTitle: <>The Reassurance<br />of Feeling Seen</>,
+    readChapter: "Read this chapter",
+    excerpt: ["Have you ever read the results of a personality test and found yourself laughing?", "“This is almost frighteningly accurate.”", "“Did someone write this after watching me?”"],
+    aboutLabel: "The way in",
+    aboutTitle: "Four letters can be an entrance, not an answer.",
+    aboutBody: "The aim is not to change your personality. It is to add one more response you can choose when a situation calls for it. This book offers a clear framework and small, practical experiments for doing just that.",
+    contentsSummary: "Guide, prologue, all 12 chapters, epilogue, workbook, and references",
+    itemsStored: (count, bytes) => `${count} complete entries · ${bytes} bytes`,
+    workbookLabel: "Workbook",
+    workbookTitle: "Add One Choice in 30 Days",
+    workbookBody: "You do not need to change everything every day. Choose one real problem and work with it in small, steady steps for thirty days.",
+    openWorkbook: "Open the workbook",
+    home: "Back to home",
+    fullToc: "Full contents",
+    closeToc: "Close contents",
+    bookmark: "Add bookmark",
+    bookmarked: "Bookmark saved",
+    previous: "Previous",
+    next: "Next",
+    finished: "Finished",
+    chapterNav: "Chapter navigation",
+    readingPosition: "Reading position",
+    guestbookLabel: "Reader messages",
+    guestbookTitle: "Leave a thought here.",
+    guestbookIntro: "Share a reflection, a question, or one small step you want to try. Messages are public and visible to every reader in every language.",
+    name: "Name",
+    namePlaceholder: "Public display name (up to 40 characters)",
+    message: "Message",
+    messagePlaceholder: "A reflection, question, or step you want to try (up to 500 characters)",
+    submit: "Post message",
+    submitting: "Posting…",
+    refresh: "Refresh",
+    empty: "No messages yet. You can leave the first one.",
+    loadError: "Messages could not be loaded. Please try again shortly.",
+    submitError: "Your message could not be saved. Check the form or the storage configuration.",
+    submitSuccess: "Your message is now public.",
+    publicStorage: "Messages are stored in one fixed data file and shared across all three editions.",
+  },
 };
+
+const localeTags = { ja: "ja-JP", zh: "zh-CN", en: "en-US" };
+const pageTitles = { ja: "四文字の、その先へ。｜ウェブ版", zh: "四个字母之外｜网页版", en: "Beyond the Four Letters | Web Edition" };
 
 function parseHash() {
   const hash = window.location.hash;
-  const readerMatch = hash.match(/^#(ja|zh)-read-(.+)$/);
+  const readerMatch = hash.match(/^#(ja|zh|en)-read-(.+)$/);
   if (readerMatch) return { locale: readerMatch[1], view: "reader", slug: readerMatch[2], section: null };
-  const pageMatch = hash.match(/^#(ja|zh)-(home|comments)$/);
+  const pageMatch = hash.match(/^#(ja|zh|en)-(home|comments)$/);
   if (pageMatch) return { locale: pageMatch[1], view: "home", slug: null, section: pageMatch[2] };
   return { locale: null, view: "home", slug: null, section: null };
 }
@@ -141,14 +198,14 @@ function scrollToId(id) {
 }
 
 function shortTitle(document) {
-  const stripped = document.title.replace(/^第\s*\d+\s*章[　 ]*/, "");
+  const stripped = document.title.replace(/^(?:第\s*\d+\s*章[　 ]*|Chapter\s+\d+:?\s*)/, "");
   return stripped === document.label ? "" : stripped;
 }
 
 export function App() {
   const initial = parseHash();
   const savedLocale = window.localStorage.getItem("book-locale");
-  const initialLocale = initial.locale || (savedLocale === "zh" ? "zh" : "ja");
+  const initialLocale = initial.locale || (["ja", "zh", "en"].includes(savedLocale) ? savedLocale : "ja");
   const initialBook = getBook(initialLocale);
   const initialIndex = Math.max(initialBook.documents.findIndex((document) => document.slug === initial.slug), 0);
   const [locale, setLocale] = useState(initialLocale);
@@ -188,7 +245,7 @@ export function App() {
     const nextBook = getBook(nextLocale);
     setLocale(nextLocale);
     window.localStorage.setItem("book-locale", nextLocale);
-    document.documentElement.lang = nextLocale === "zh" ? "zh-CN" : "ja";
+    document.documentElement.lang = localeTags[nextLocale];
     if (view === "reader") {
       window.history.replaceState(null, "", `#${nextLocale}-read-${nextBook.documents[currentIndex].slug}`);
     } else if (window.location.hash.endsWith("-comments")) {
@@ -199,8 +256,8 @@ export function App() {
   };
 
   useEffect(() => {
-    document.documentElement.lang = locale === "zh" ? "zh-CN" : "ja";
-    document.title = locale === "zh" ? "四个字母之外｜网页版" : "四文字の、その先へ。｜ウェブ版";
+    document.documentElement.lang = localeTags[locale];
+    document.title = pageTitles[locale];
   }, [locale]);
 
   useEffect(() => {
@@ -276,10 +333,12 @@ export function App() {
 
 function LanguageSwitcher({ locale, changeLocale, compact = false }) {
   return (
-    <div className={compact ? "language-switcher is-compact" : "language-switcher"} aria-label={locale === "zh" ? "语言选择" : "言語選択"}>
+    <div className={compact ? "language-switcher is-compact" : "language-switcher"} aria-label={locale === "zh" ? "语言选择" : locale === "ja" ? "言語選択" : "Language selection"}>
       <button onClick={() => changeLocale("ja")} aria-pressed={locale === "ja"}>日本語</button>
       <span aria-hidden="true">/</span>
       <button onClick={() => changeLocale("zh")} aria-pressed={locale === "zh"}>中文</button>
+      <span aria-hidden="true">/</span>
+      <button onClick={() => changeLocale("en")} aria-pressed={locale === "en"}>English</button>
     </div>
   );
 }
@@ -335,7 +394,7 @@ function HomePage({ locale, t, book, openDocument, openComments, setTocOpen, cha
           <p className="section-label">{t.aboutLabel}</p>
           <h2 id="about-title">{t.aboutTitle}</h2>
           <p>{t.aboutBody}</p>
-          <p className="content-completeness">{t.contentsSummary}<br />{t.itemsStored(book.documents.length, book.totalBytes.toLocaleString(locale === "zh" ? "zh-CN" : "ja-JP"))}</p>
+          <p className="content-completeness">{t.contentsSummary}<br />{t.itemsStored(book.documents.length, book.totalBytes.toLocaleString(localeTags[locale]))}</p>
         </section>
 
         <section className="work-section" id="work" aria-labelledby="work-title">
@@ -450,7 +509,7 @@ function Guestbook({ locale, t }) {
       const response = await fetch("/api/comments", {
         method: "POST",
         headers: { "content-type": "application/json", accept: "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, locale }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "save_failed");
@@ -484,7 +543,7 @@ function Guestbook({ locale, t }) {
         <div className="comment-list-header"><h3>{t.guestbookLabel}</h3><button onClick={loadComments} disabled={loading}>{t.refresh}</button></div>
         {loading ? <p className="comments-empty">…</p> : comments.length === 0 ? <p className="comments-empty">{t.empty}</p> : comments.map((comment) => (
           <article className="comment-item" key={comment.id}>
-            <header><strong>{comment.name}</strong><time dateTime={comment.createdAt}>{new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "ja-JP", { year: "numeric", month: "short", day: "numeric" }).format(new Date(comment.createdAt))}</time></header>
+            <header><strong>{comment.name}</strong><span className="comment-locale">{comment.locale ? comment.locale.toUpperCase() : "—"}</span><time dateTime={comment.createdAt}>{new Intl.DateTimeFormat(localeTags[locale], { year: "numeric", month: "short", day: "numeric" }).format(new Date(comment.createdAt))}</time></header>
             <p>{comment.message}</p>
           </article>
         ))}

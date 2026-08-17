@@ -3,9 +3,9 @@ import test from "node:test";
 import { createComment, normalizeCommentFile, prependComment, validateCommentInput } from "../lib/comments-core.js";
 
 test("validates and normalizes public comment input", () => {
-  assert.deepEqual(validateCommentInput({ name: "  小林  ", message: "  很受启发。\r\n谢谢。  " }), {
+  assert.deepEqual(validateCommentInput({ name: "  小林  ", message: "  很受启发。\r\n谢谢。  ", locale: "en" }), {
     ok: true,
-    value: { name: "小林", message: "很受启发。\n谢谢。" },
+    value: { name: "小林", message: "很受启发。\n谢谢。", locale: "en" },
   });
   assert.equal(validateCommentInput({ name: "", message: "hello" }).error, "invalid_name");
   assert.equal(validateCommentInput({ name: "reader", message: "" }).error, "invalid_message");
@@ -13,11 +13,12 @@ test("validates and normalizes public comment input", () => {
 });
 
 test("prepends comments and keeps a stable file shape", () => {
-  const comment = createComment({ name: "読者", message: "選択肢が増えました。" }, new Date("2026-08-17T00:00:00.000Z"));
+  const comment = createComment({ name: "読者", message: "選択肢が増えました。", locale: "ja" }, new Date("2026-08-17T00:00:00.000Z"));
   const next = prependComment(normalizeCommentFile({ comments: [] }), comment);
   assert.equal(next.version, 1);
   assert.equal(next.comments.length, 1);
   assert.equal(next.comments[0].createdAt, "2026-08-17T00:00:00.000Z");
+  assert.equal(next.comments[0].locale, "ja");
 });
 
 test("Vercel handler reads and updates the fixed GitHub file", async () => {
@@ -38,13 +39,14 @@ test("Vercel handler reads and updates the fixed GitHub file", async () => {
   const { default: handler } = await import(`../api/comments.js?test=${Date.now()}`);
   const result = await invoke(handler, {
     method: "POST",
-    body: { name: "Reader", message: "One more choice.", website: "" },
+    body: { name: "Reader", message: "One more choice.", website: "", locale: "en" },
     headers: { "x-forwarded-for": "192.0.2.1" },
   });
 
   globalThis.fetch = originalFetch;
   assert.equal(result.statusCode, 201);
   assert.equal(result.payload.comments[0].name, "Reader");
+  assert.equal(result.payload.comments[0].locale, "en");
   assert.equal(requests.length, 2);
   assert.equal(requests[1].options.method, "PUT");
   assert.match(requests[1].url, /data\/comments\.json$/);
