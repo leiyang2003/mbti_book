@@ -1,4 +1,12 @@
 {
   "version": 1,
-  "comments": []
+  "comments": [
+    {
+      "id": "a809873a-12fb-4c44-9f20-8f48cc46062f",
+      "name": "Author",
+      "message": "自己成長システムを経営者・スタートアップ創業者に伝えるためのものです。",
+      "locale": "ja",
+      "createdAt": "2026-08-17T06:22:26.843Z"
+    }
+  ]
 }
