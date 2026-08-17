@@ -348,7 +348,6 @@ function HomePage({ locale, t, book, openDocument, openComments, setTocOpen, cha
   return (
     <>
       <header className="site-header" aria-label={t.navLabel}>
-        <button className="wordmark" onClick={() => scrollToId("top")}>{t.brand}</button>
         <nav className="desktop-nav" aria-label={t.navLabel}>
           <button onClick={() => scrollToId("about")}>{t.aboutNav}</button>
           <button onClick={() => setTocOpen(true)}>{t.toc}</button>
